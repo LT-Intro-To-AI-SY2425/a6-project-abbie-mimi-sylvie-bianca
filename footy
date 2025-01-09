@@ -30,7 +30,7 @@ print(prediction)
 # Create the model in matplotlib and include the line of best fit
 
 plt.scatter(x,y, c="purple")
-plt.scatter(x_predict, prediction, c="blue")
+# plt.scatter(x_predict, prediction, c="blue")
 
 plt.xlabel("Minutes Played")
 plt.ylabel("Goals")
