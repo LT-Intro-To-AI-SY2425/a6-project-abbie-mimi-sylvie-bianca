@@ -4,33 +4,42 @@ import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
 data = pd.read_csv("real_footy_data.csv")
-x = data["MIN"].values
-y = data["G"].values
 
-# Use reshape to turn the x values into 2D arrays:
-x = x.reshape(-1,1)
+Q1_asst = data['MIN'].quantile(0.25)
+Q3_asst = data['MIN'].quantile(0.75)
+Q1_goals = data['G'].quantile(0.25)
+Q3_goals = data['G'].quantile(0.75)
 
-# Create the model
+IQR_asst = Q3_asst - Q1_asst
+IQR_goals = Q3_goals - Q1_goals
+
+lower_bound_asst = Q1_asst - 1.5 * IQR_asst
+upper_bound_asst = Q3_asst + 1.5 * IQR_asst
+lower_bound_goals = Q1_goals - 1.5 * IQR_goals
+upper_bound_goals = Q3_goals + 1.5 * IQR_goals
+
+data_no_outliers = data[(data['MIN'] >= lower_bound_asst) & (data['MIN'] <= upper_bound_asst) & (data['G'] >= lower_bound_goals) & (data['G'] <= upper_bound_goals)]
+
+x = data_no_outliers["MIN"].values
+y = data_no_outliers["G"].values
+
+x = x.reshape(-1, 1)
+
 model = LinearRegression().fit(x, y)
 
-# Find the coefficient, bias, and r squared values. 
-# Each should be a float and rounded to two decimal places. 
 coef = model.coef_[0]
 intercept = model.intercept_
 r_squared = model.score(x, y)
 
-# Print out the linear equation and r squared value
-print(f"Model's Linear Equation: y = {coef}x + {intercept}")
-print(f"R Squared value: {r_squared}")
+print(f"Model's Linear Equation: y = {coef:.2f}x + {intercept:.2f}")
+print(f"R Squared value: {r_squared:.2f}")
 
-plt.scatter(x,y, c="purple")
-
-
-plt.xlabel("Minutes Played")
+plt.scatter(x, y, c="purple")
+plt.xlabel("Minutes")
 plt.ylabel("Goals")
-plt.title("Goals by Minutes Played")
+plt.title("Goals by Minutes")
 
-plt.plot(x, coef*x + intercept, c="r", label="Line of Best Fit")
+plt.plot(x, coef * x + intercept, c="r", label="Line of Best Fit")
 
 plt.legend()
 plt.show()
