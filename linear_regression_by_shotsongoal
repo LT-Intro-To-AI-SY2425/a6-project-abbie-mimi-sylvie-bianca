@@ -28,7 +28,7 @@ plt.scatter(x,y, c="purple")
 
 plt.xlabel("Shots on Goal")
 plt.ylabel("Goals")
-plt.title("Goals by Shots on goal")
+plt.title("Goals by Shots on Goal")
 
 plt.plot(x, coef*x + intercept, c="r", label="Line of Best Fit")
 
