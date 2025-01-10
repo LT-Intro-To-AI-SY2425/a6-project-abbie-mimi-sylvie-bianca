@@ -3,54 +3,42 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
-# Load the dataset
 data = pd.read_csv("real_footy_data.csv")
 
-# Calculate Q1 (25th percentile) and Q3 (75th percentile) for both ASST and G
 Q1_asst = data['ASST'].quantile(0.25)
 Q3_asst = data['ASST'].quantile(0.75)
 Q1_goals = data['G'].quantile(0.25)
 Q3_goals = data['G'].quantile(0.75)
 
-# Calculate IQR for both columns
 IQR_asst = Q3_asst - Q1_asst
 IQR_goals = Q3_goals - Q1_goals
 
-# Define the bounds for outliers
 lower_bound_asst = Q1_asst - 1.5 * IQR_asst
 upper_bound_asst = Q3_asst + 1.5 * IQR_asst
 lower_bound_goals = Q1_goals - 1.5 * IQR_goals
 upper_bound_goals = Q3_goals + 1.5 * IQR_goals
 
-# Filter the data to remove outliers in both ASST and G
 data_no_outliers = data[(data['ASST'] >= lower_bound_asst) & (data['ASST'] <= upper_bound_asst) & (data['G'] >= lower_bound_goals) & (data['G'] <= upper_bound_goals)]
 
-# Extract the cleaned x and y values
 x = data_no_outliers["ASST"].values
 y = data_no_outliers["G"].values
 
-# Use reshape to turn the x values into 2D arrays
 x = x.reshape(-1, 1)
 
-# Create the model
 model = LinearRegression().fit(x, y)
 
-# Find the coefficient, bias, and r squared values
 coef = model.coef_[0]
 intercept = model.intercept_
 r_squared = model.score(x, y)
 
-# Print out the linear equation and r squared value
 print(f"Model's Linear Equation: y = {coef:.2f}x + {intercept:.2f}")
 print(f"R Squared value: {r_squared:.2f}")
 
-# Plot the data
 plt.scatter(x, y, c="purple")
 plt.xlabel("Assists")
 plt.ylabel("Goals")
 plt.title("Goals by Assists (Without Outliers)")
 
-# Plot the line of best fit
 plt.plot(x, coef * x + intercept, c="r", label="Line of Best Fit")
 
 plt.legend()
