@@ -6,7 +6,7 @@ from sklearn.metrics import mean_squared_error
 
 df = pd.read_csv("real_footy_data.csv")
 
-X = df.drop(columns=['G'])
+X = df.drop(columns=['G', 'SOG'])
 y = df['G']
 
 scaler = StandardScaler()
@@ -28,11 +28,10 @@ gs = float(input("Games Started (GS): "))
 min_played = float(input("Minutes Played (MIN): "))
 asst = float(input("Assists (ASST): "))
 shots = float(input("Shots (SHOTS): "))
-sog = float(input("Shots on Goal (SOG): "))
 
-new_player_stats = [[gp, gs, min_played, asst, shots, sog]]
+new_player_stats = [[gp, gs, min_played, asst, shots]]
 
-new_player_df = pd.DataFrame(new_player_stats, columns=['GP', 'GS', 'MIN', 'ASST', 'SHOTS', 'SOG'])
+new_player_df = pd.DataFrame(new_player_stats, columns=['GP', 'GS', 'MIN', 'ASST', 'SHOTS'])
 new_player_scaled = scaler.transform(new_player_df)
 
 predicted_goals = model.predict(new_player_scaled)
